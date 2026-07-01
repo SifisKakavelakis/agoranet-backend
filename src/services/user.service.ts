@@ -1,4 +1,4 @@
-import { IUser } from "../models/user.model";
+import User, { IUser } from "../models/user.model";
 import { Role, ROLES } from "../models/role.model";
 import bcrypt from 'bcrypt';
 import { CreateUserDTO } from "../dto/user.dto";
@@ -22,7 +22,10 @@ export const createUser = async (payload: CreateUserDTO) => {
         await (user as any).addRole(buyerRole);
     }
 
-    return user;
+    return await User.findOne({
+        where: { id: user.id },
+        include: [{ model: Role, as: 'roles' }],
+    });
 };
 
 export const updateUser = async (username: string, payload: UpdateUserDTO) => {
