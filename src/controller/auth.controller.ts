@@ -19,7 +19,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         const data: CreateUserDTO = req.body;
         const result = await authService.register(data);
         if (!result) return res.status(400).json({ message: 'User already exists' });
-        res.status(200).json({ message: 'User registered successfully', data: toUserResponseDTO(result) });
+        res.status(201).json({ token: result.token, user: toUserResponseDTO(result.user) });
     } catch (err) {
         next(err);
     }

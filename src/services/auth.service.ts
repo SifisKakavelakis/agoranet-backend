@@ -45,5 +45,14 @@ export const register = async (payload: CreateUserDTO) => {
     if (existingUsername) return null;
 
     const user = await userService.createUser(payload);
-    return user;
+    if (!user) return null;
+
+    const tokenPayload = { 
+        id:       user.id,
+        username: user.username, 
+        email:    user.email, 
+        roles:    (user as any).roles?.map((r: any) => r.name)
+    };
+    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+    return { user, token };
 };
