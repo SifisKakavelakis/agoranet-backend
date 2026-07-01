@@ -8,7 +8,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         const { credential, password } = req.body;
         const result = await authService.login(credential, password);
         if (!result) return res.status(401).json({ message: 'Invalid email or password' });
-        res.status(200).json({ message: 'Login successful', data: toUserResponseDTO(result) });
+        res.status(200).json({ token: result.token, user: toUserResponseDTO(result.user) });
     } catch (err) {
         next(err);
     }   

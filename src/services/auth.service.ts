@@ -4,6 +4,10 @@ import { User } from '../models/user.model';
 import { Role } from '../models/role.model';
 import { CreateUserDTO } from '../dto/user.dto';
 import * as userService from './user.service';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
+const JWT_EXPIRES = '1h';
 
 export const login = async (credential: string, password: string) => {
     
@@ -22,7 +26,14 @@ export const login = async (credential: string, password: string) => {
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) return null;
 
-    return user;
+    const payload = { 
+        id:       user.id,
+        username: user.username, 
+        email:    user.email, 
+        roles:    (user as any).roles?.map((r: any) => r.name)
+    };
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+    return { user, token };
 };
 
 export const register = async (payload: CreateUserDTO) => {
