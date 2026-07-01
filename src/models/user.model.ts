@@ -8,7 +8,6 @@ export interface IUser {
     email: string;
     firstName: string;
     lastName: string;
-    roleId?: number;
     phoneNumber?: string | null;
     isActive?: boolean;
     avatarUrl?: string | null;
@@ -23,7 +22,6 @@ export class User extends Model<IUser> implements IUser {
     declare email: string;
     declare firstName: string;
     declare lastName: string;
-    declare roleId: number;
     declare phoneNumber: string | null;
     declare isActive: boolean;
     declare avatarUrl: string | null;
@@ -62,12 +60,6 @@ User.init(
             type: DataTypes.STRING(50),
             allowNull: false,
             field: 'last_name',
-        },
-        roleId: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: false,
-            defaultValue: 2,
-            field: 'role_id',
         },
         phoneNumber: {
             type: DataTypes.STRING(20),

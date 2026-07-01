@@ -1,8 +1,19 @@
 import { User } from './user.model';
 import { Role } from './role.model';
+import { UserRole } from './user-role.model';
 
-// Associations
-User.belongsTo(Role, { foreignKey: 'role_id', as: 'role' });
-Role.hasMany(User,   { foreignKey: 'role_id', as: 'users' });
+User.belongsToMany(Role, {
+    through:    UserRole,
+    foreignKey: 'user_id',
+    otherKey:   'role_id',
+    as:         'roles',
+});
 
-export { User, Role };
+Role.belongsToMany(User, {
+    through:    UserRole,
+    foreignKey: 'role_id',
+    otherKey:   'user_id',
+    as:         'users',
+});
+
+export { User, Role, UserRole };

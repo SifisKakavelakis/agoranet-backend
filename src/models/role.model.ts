@@ -3,6 +3,13 @@ import { sequelize } from '../utils/db';
 
 export type RoleName = 'guest' | 'buyer' | 'seller' | 'admin';
 
+export const ROLES = {
+  GUEST:  1,
+  BUYER:  2,
+  SELLER: 3,
+  ADMIN:  4,
+} as const;
+
 export interface IRole {
   id?:        number;
   name:       RoleName;
