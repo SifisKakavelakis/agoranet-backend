@@ -87,3 +87,5 @@ User.init(
         updatedAt: 'updated_at',
     }
 );
+
+export default User;
