@@ -11,7 +11,12 @@ if (!JWT_SECRET_ENV) {
     throw new Error('JWT_SECRET is not defined');
 }
 const JWT_SECRET: string = JWT_SECRET_ENV;
-const JWT_EXPIRES = '1h';
+
+const JWT_EXPIRES_ENV = process.env.JWT_EXPIRES;
+if (!JWT_EXPIRES_ENV) {
+    throw new Error('JWT_EXPIRES is not defined');
+}
+const JWT_EXPIRES: string = JWT_EXPIRES_ENV;
 
 export const login = async (credential: string, password: string) => {
 
@@ -53,5 +58,5 @@ function generateToken(user: User): string {
     id: user.id,
     roles: (user as any).roles?.map((r: any) => r.name),
   };
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES as any });
 }
