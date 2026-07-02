@@ -6,15 +6,19 @@ import { CreateUserDTO } from '../dto/user.dto';
 import * as userService from './user.service';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
+const JWT_SECRET_ENV = process.env.JWT_SECRET;
+if (!JWT_SECRET_ENV) {
+    throw new Error('JWT_SECRET is not defined');
+}
+const JWT_SECRET: string = JWT_SECRET_ENV;
 const JWT_EXPIRES = '1h';
 
 export const login = async (credential: string, password: string) => {
-    
+
     const user = await User.findOne({
         where: {
             [Op.or]: [
-                { email:    credential },
+                { email: credential },
                 { username: credential },
             ]
         },
@@ -26,33 +30,28 @@ export const login = async (credential: string, password: string) => {
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) return null;
 
-    const payload = { 
-        id:       user.id,
-        username: user.username, 
-        email:    user.email, 
-        roles:    (user as any).roles?.map((r: any) => r.name)
-    };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+    const token = generateToken(user);
     return { user, token };
 };
 
 export const register = async (payload: CreateUserDTO) => {
 
-    const existingEmail = await User.findOne({ where: { email: payload.email } });
-    if (existingEmail) return null;
-
-    const existingUsername = await User.findOne({ where: { username: payload.username } });
-    if (existingUsername) return null;
+    const existingCredential = await User.findOne({
+        where: { [Op.or]: [{ email: payload.email }, { username: payload.username }] }
+    });
+    if (existingCredential) return null;
 
     const user = await userService.createUser(payload);
     if (!user) return null;
 
-    const tokenPayload = { 
-        id:       user.id,
-        username: user.username, 
-        email:    user.email, 
-        roles:    (user as any).roles?.map((r: any) => r.name)
-    };
-    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+    const token = generateToken(user);
     return { user, token };
 };
+
+function generateToken(user: User): string {
+  const payload = {
+    id: user.id,
+    roles: (user as any).roles?.map((r: any) => r.name),
+  };
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+}
