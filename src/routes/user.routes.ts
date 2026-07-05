@@ -1,9 +1,9 @@
 import { Router } from "express";
 import * as userCtrl from '../controller/user.controller';
+import { authenticate } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-router.post('/', userCtrl.create);
-router.put('/:username', userCtrl.update);
+router.put('/:username', authenticate, userCtrl.update);
 
 export default router;

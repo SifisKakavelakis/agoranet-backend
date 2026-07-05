@@ -2,15 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import * as userService from '../services/user.service';
 import { UpdateUserDTO } from "../dto/user.dto";
 
-export const create = async(req:Request, res:Response, next:NextFunction) => {
-    try {
-        const user = await userService.createUser(req.body);
-        res.status(201).json({status:true, data:user});
-    } catch(err) {
-        console.log(err);
-        next(err)}
-}
-
 export const update = async(req:Request, res:Response, next:NextFunction) => {
     try {
         const username = req.params.username as string;
