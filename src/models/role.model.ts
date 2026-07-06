@@ -47,3 +47,5 @@ Role.init(
     timestamps: false,
   }
 );
+
+export default Role;
