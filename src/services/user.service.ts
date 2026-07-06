@@ -30,8 +30,8 @@ export const createUser = async (payload: CreateUserDTO) => {
 
 export const updateUser = async (username: string, payload: UpdateUserDTO) => {
     const updateUser: Partial<IUser> = {};
-    if (payload.firstname!=undefined) updateUser.firstName = payload.firstname;
-    if (payload.lastname!=undefined) updateUser.lastName = payload.lastname;
+    if (payload.firstname!=undefined) updateUser.firstname = payload.firstname;
+    if (payload.lastname!=undefined) updateUser.lastname = payload.lastname;
     if (payload.email!=undefined) updateUser.email = payload.email;
     if (payload.phoneNumber!=undefined) updateUser.phoneNumber = payload.phoneNumber;
     if (payload.avatarUrl!=undefined) updateUser.avatarUrl = payload.avatarUrl;
