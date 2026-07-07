@@ -4,6 +4,7 @@ import userRoutes from './routes/user.routes';
 import authRoutes from './routes/auth.routes';
 import './models/index'; 
 import { setupSwagger } from './swagger';
+import productRoutes from './routes/product.routes';
 
 dotenv.config();
 
@@ -13,5 +14,6 @@ setupSwagger(app);
 
 app.use('/api/users', userRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/products', productRoutes);
 
 export default app;
