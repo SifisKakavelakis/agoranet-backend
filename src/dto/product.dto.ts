@@ -19,8 +19,8 @@ export interface ProductResponseDTO {
   description:  string | null;
   price:        number;
   isActive:     boolean;
-  category:     { id: number; name: string; };
-  seller:       { id: number; username: string; };
+  category: { id: number; name: string; } | null;
+  seller:   { id: number; username: string; } | null;
   images:       { id: number; url: string; isPrimary: boolean; }[];
   createdAt:    Date;
   updatedAt:    Date;

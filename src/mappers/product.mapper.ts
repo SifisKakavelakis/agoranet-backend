@@ -10,14 +10,14 @@ export const toProductResponseDTO = (product: Product): ProductResponseDTO => {
         description: product.description,
         price:       product.price,
         isActive:    product.isActive,
-        category: {
-            id:   p.category?.id,
-            name: p.category?.name,
-        },
-        seller: {
-            id:       p.seller?.id,
-            username: p.seller?.username,
-        },
+        category: p.category ? {
+            id:   p.category.id,
+            name: p.category.name,
+        } : null,
+        seller: p.seller ? {
+            id:       p.seller.id,
+            username: p.seller.username,
+        } : null,
         images: p.images?.map((img: any) => ({
             id:        img.id,
             url:       img.url,
