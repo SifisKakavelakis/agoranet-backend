@@ -2,6 +2,8 @@ import { Router } from 'express';
 import * as productCtrl from '../controller/product.controller';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
 import { upload } from '../middlewares/upload.middleware';
+import { createProductSchema, updateProductSchema } from '../validators/product.validator';
+import { validate } from '../middlewares/validate.middleware';
 
 const router = Router();
 
@@ -97,7 +99,7 @@ router.get('/:id', productCtrl.getById);
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticate, authorize('seller'), productCtrl.create);
+router.post('/', authenticate, authorize('seller'), validate(createProductSchema), productCtrl.create);
 
 /**
  * @openapi
@@ -136,7 +138,7 @@ router.post('/', authenticate, authorize('seller'), productCtrl.create);
  *       403:
  *         description: Access denied
  */
-router.put('/:id', authenticate, authorize('seller'), productCtrl.update);
+router.put('/:id', authenticate, authorize('seller'), validate(updateProductSchema), productCtrl.update);
 
 /**
  * @openapi
