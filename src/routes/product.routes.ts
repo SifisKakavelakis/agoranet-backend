@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import * as productCtrl from '../controller/product.controller';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
+import { upload } from '../middlewares/upload.middleware';
 
 const router = Router();
 
@@ -158,5 +159,41 @@ router.put('/:id', authenticate, authorize('seller'), productCtrl.update);
  *         description: Product not found
  */
 router.delete('/:id', authenticate, authorize('seller'), productCtrl.remove);
+
+/**
+ * @openapi
+ * /products/{id}/images:
+ *   post:
+ *     summary: Upload images for a product
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *     responses:
+ *       201:
+ *         description: Images uploaded successfully
+ *       403:
+ *         description: Access denied
+ *       404:
+ *         description: Product not found
+ */
+router.post('/:id/images', authenticate, authorize('seller'), upload.array('images', 5), productCtrl.uploadImages);
 
 export default router;
