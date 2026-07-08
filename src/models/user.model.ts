@@ -44,7 +44,6 @@ User.init(
         password: {
             type: DataTypes.STRING(250),
             allowNull: false,
-            field: 'password',
         },
         email: {
             type: DataTypes.STRING(50),
