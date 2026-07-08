@@ -85,3 +85,25 @@ export const getMySelling = async (req: Request, res: Response, next: NextFuncti
         next(err);
     }
 };
+
+export const uploadImages = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = parseInt(req.params.id as string);
+        const sellerId = req.user!.id;
+        const files = req.files as Express.Multer.File[];
+
+        const existing = await productService.getProductById(id);
+        if (!existing) return res.status(404).json({ message: 'Product not found' });
+        if ((existing as any).sellerId !== sellerId) {
+            return res.status(403).json({ message: 'Access denied — not your product' });
+        }
+        if (!files || files.length === 0) {
+            return res.status(400).json({ message: 'No images uploaded' });
+        }
+
+        const images = await productService.addImages(id, files);
+        res.status(201).json({ status: true, data: images });
+    } catch (err) {
+        next(err);
+    }
+};
