@@ -1,5 +1,3 @@
-import { IProductImage } from '../models/product-image.model';
-
 export interface CreateProductDTO {
   title:        string;
   description?: string;
