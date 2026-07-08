@@ -1,8 +1,7 @@
-import { Product } from '../models/product.model';
-import { ProductImage } from '../models/product-image.model';
+import { Product, IProduct } from '../models/product.model';
+import { ProductImage, IProductImage } from '../models/product-image.model';
 import { Category } from '../models/category.model';
 import { User } from '../models/user.model';
-import { IProduct } from '../models/product.model';
 import { Op } from 'sequelize';
 
 export const createProduct = async (data: Partial<IProduct>): Promise<Product> => {
@@ -65,4 +64,12 @@ export const findBySeller = async (sellerId: number): Promise<Product[]> => {
             { model: ProductImage,  as: 'images' },
         ],
     });
+};
+
+export const findImages = async (productId: number): Promise<ProductImage[]> => {
+    return await ProductImage.findAll({ where: { productId, isPrimary: true } });
+};
+
+export const addImages = async (images: Partial<IProductImage>[]): Promise<ProductImage[]> => {
+    return await ProductImage.bulkCreate(images as IProductImage[]);
 };
