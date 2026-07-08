@@ -11,7 +11,7 @@ export const update = async(req:Request, res:Response, next:NextFunction) => {
         if (!result) {
             return res.status(404).json({message: 'User not found' });
         }
-        res.status(200).json(toUserResponseDTO(result));
+        res.status(200).json({ status: true, data: toUserResponseDTO(result) });
     } catch(err) {
         next(err)
     }
