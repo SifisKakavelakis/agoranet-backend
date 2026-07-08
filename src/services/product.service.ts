@@ -33,3 +33,17 @@ export const updateProduct = async (id: number, payload: UpdateProductDTO) => {
 export const deleteProduct = async (id: number): Promise<void> => {
     await productDAO.deleteProduct(id);
 };
+
+export const addImages = async (productId: number, files: Express.Multer.File[]) => {
+    // ελέγχουμε αν υπάρχει ήδη primary εικόνα
+    const existingImages = await productDAO.findImages(productId);
+    const hasPrimary = existingImages.length > 0;
+
+    const images = files.map((file, index) => ({
+        productId,
+        url: `/api/uploads/${file.filename}`,
+        isPrimary: !hasPrimary && index === 0, // primary μόνο αν δεν υπάρχει ήδη
+    }));
+
+    return await productDAO.addImages(images);
+};
