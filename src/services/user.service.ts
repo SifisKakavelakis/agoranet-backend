@@ -8,7 +8,6 @@ import { UpdateUserDTO } from "../dto/user.dto";
 export const BCRYPT_SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10');
 
 export const createUser = async (payload: CreateUserDTO) => {
-    console.log("Service Payload", payload);
 
     const hashedPassword = await bcrypt.hash(payload.password, BCRYPT_SALT_ROUNDS);
 
