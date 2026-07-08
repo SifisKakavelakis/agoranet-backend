@@ -5,7 +5,7 @@ import authRoutes from './routes/auth.routes';
 import './models/index'; 
 import { setupSwagger } from './swagger';
 import productRoutes from './routes/product.routes';
-import path from 'path/win32';
+import path from 'path';
 
 dotenv.config();
 
