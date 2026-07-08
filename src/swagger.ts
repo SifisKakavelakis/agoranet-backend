@@ -8,7 +8,7 @@ const options: swaggerJSDoc.Options = {
         info: {
             title: 'Agoranet API',
             version: '1.0.0',
-            description: 'API documentation for User and Role management',
+            description: 'AgoraNet Marketplace API Documentation',
         },
          tags: [
             { name: 'Auth',  description: 'Authentication endpoints' },
