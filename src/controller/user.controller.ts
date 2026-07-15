@@ -6,11 +6,11 @@ import { toUserResponseDTO } from "../mappers/user.mapper";
 export const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const username = req.params.username as string;
-        const data: UpdateUserDTO = req.body;
-        const result = await userService.updateUser(username, data);
         if (req.user!.username !== username) {
             return res.status(403).json({ message: 'Access denied' });
         }
+        const data: UpdateUserDTO = req.body;
+        const result = await userService.updateUser(username, data);
         if (!result) {
             return res.status(404).json({ message: 'User not found' });
         }
