@@ -121,6 +121,6 @@ router.put('/:id/status', authenticate, authorize('seller'), validate(updateOrde
  *       400:
  *         description: Order could not be cancelled
  */
-router.put('/:id/cancel', authenticate, authorize('buyer', 'seller'), orderCtrl.cancelOrder);
+router.put('/:id/cancel', authenticate, authorize('buyer'), orderCtrl.cancelOrder);
 
 export default router;
