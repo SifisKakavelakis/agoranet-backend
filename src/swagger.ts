@@ -14,6 +14,7 @@ const options: swaggerJSDoc.Options = {
             { name: 'Auth',  description: 'Authentication endpoints' },
             { name: 'Users', description: 'User management endpoints' },
             { name: 'Products', description: 'Product management endpoints' },
+            { name: 'Orders', description: 'Order management endpoints' },
         ],
         servers: [
             {
