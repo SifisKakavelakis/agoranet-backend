@@ -55,8 +55,9 @@ export const register = async (payload: CreateUserDTO) => {
 
 function generateToken(user: User): string {
   const payload = {
-    id: user.id,
-    roles: (user as any).roles?.map((r: any) => r.name),
-  };
+    id:       user.id,
+    username: user.username,
+    roles:    (user as any).roles?.map((r: any) => r.name),
+};
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES as any });
 }

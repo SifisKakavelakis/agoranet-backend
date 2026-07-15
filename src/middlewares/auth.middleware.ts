@@ -9,8 +9,8 @@ const JWT_SECRET: string = JWT_SECRET_ENV;
 
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
     const header = req.headers.authorization;
-    if(!header || !header.startsWith('Bearer ')) {
-       return res.status(401).json({ message: 'Missing or invalid Authorization header' });
+    if (!header || !header.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Missing or invalid Authorization header' });
     }
     const token = header.split(' ')[1];
 
@@ -21,9 +21,10 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
     try {
         const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
         req.user = {
-        id:    payload.id,
-        roles: payload.roles,
-    };
+            id: payload.id,
+            username: payload.username,
+            roles: payload.roles,
+        };
         next()
     } catch (err) {
         res.status(401).json({ message: 'Invalid or expired token' });

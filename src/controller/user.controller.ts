@@ -3,16 +3,19 @@ import * as userService from '../services/user.service';
 import { UpdateUserDTO } from "../dto/user.dto";
 import { toUserResponseDTO } from "../mappers/user.mapper";
 
-export const update = async(req:Request, res:Response, next:NextFunction) => {
+export const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const username = req.params.username as string;
         const data: UpdateUserDTO = req.body;
         const result = await userService.updateUser(username, data);
+        if (req.user!.username !== username) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
         if (!result) {
-            return res.status(404).json({message: 'User not found' });
+            return res.status(404).json({ message: 'User not found' });
         }
         res.status(200).json({ status: true, data: toUserResponseDTO(result) });
-    } catch(err) {
+    } catch (err) {
         next(err)
     }
 }
