@@ -8,10 +8,15 @@ import productRoutes from './routes/product.routes';
 import path from 'path';
 import orderRoutes from './routes/order.routes';
 import { errorHandler } from './middlewares/error.middleware';
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express();
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}));
 app.use(express.json());
 setupSwagger(app);
 
