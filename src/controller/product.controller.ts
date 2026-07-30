@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as productService from '../services/product.service';
 import { CreateProductDTO, UpdateProductDTO } from '../dto/product.dto';
 import { toProductResponseDTO } from '../mappers/product.mapper';
+import fs from 'fs';
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -93,10 +94,15 @@ export const uploadImages = async (req: Request, res: Response, next: NextFuncti
         const files = req.files as Express.Multer.File[];
 
         const existing = await productService.getProductById(id);
-        if (!existing) return res.status(404).json({ message: 'Product not found' });
+        if (!existing) {
+            files?.forEach(file => fs.unlinkSync(file.path));
+            return res.status(404).json({ message: 'Product not found' });
+        }
         if ((existing as any).sellerId !== sellerId) {
+            files?.forEach(file => fs.unlinkSync(file.path));
             return res.status(403).json({ message: 'Access denied — not your product' });
         }
+
         if (!files || files.length === 0) {
             return res.status(400).json({ message: 'No images uploaded' });
         }
