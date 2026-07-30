@@ -47,4 +47,24 @@ const router = Router();
  */
 router.put('/:username', authenticate, validate(updateUserSchema), userCtrl.update);
 
+/**
+ * @openapi
+ * /users/{username}:
+ *   get:
+ *     summary: Get user by username
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User found
+ *       404:
+ *         description: User not found
+ */
+router.get('/:username', userCtrl.getByUsername);
+
 export default router;
