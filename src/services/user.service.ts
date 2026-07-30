@@ -42,3 +42,7 @@ export const updateUser = async (username: string, payload: UpdateUserDTO) => {
     const user = await userDAO.updateUser(username, updateUser);
     return user;
 }
+
+export const getUserByUsername = async (username: string) => {
+    return await userDAO.findByUsername(username);
+};
