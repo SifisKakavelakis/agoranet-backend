@@ -1,6 +1,7 @@
 import * as reviewDAO from '../dao/review.dao';
 import * as orderDAO from '../dao/order.dao';
 import { CreateReviewDTO } from '../dto/review.dto';
+import * as userDAO from '../dao/user.dao';
 
 export const createReview = async (reviewerId: number, payload: CreateReviewDTO) => {
 
@@ -23,6 +24,8 @@ export const createReview = async (reviewerId: number, payload: CreateReviewDTO)
     return { data: review };
 };
 
-export const getSellerReviews = async (sellerId: number) => {
-    return await reviewDAO.findBySeller(sellerId);
+export const getSellerReviews = async (username: string) => {
+    const seller = await userDAO.findByUsername(username);
+    if (!seller) return [];
+    return await reviewDAO.findBySeller(seller.id);
 };

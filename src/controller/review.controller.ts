@@ -21,8 +21,8 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
     
 export const getSellerReviews = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const sellerId = parseInt(req.params.sellerId as string);
-        const reviews = await reviewService.getSellerReviews(sellerId);
+        const username = req.params.username as string;
+        const reviews = await reviewService.getSellerReviews(username);
         res.status(200).json({ status: true, data: reviews.map(toReviewResponseDTO) });
     } catch (err) {
         next(err);

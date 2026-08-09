@@ -42,20 +42,20 @@ router.post('/', authenticate, authorize('buyer', 'seller'), validate(createRevi
 
 /**
  * @openapi
- * /reviews/seller/{sellerId}:
+ * /reviews/seller/{username}:
  *   get:
  *     summary: Get all reviews for a seller
  *     tags: [Reviews]
  *     parameters:
  *       - in: path
- *         name: sellerId
+ *         name: username
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: List of reviews
  */
-router.get('/seller/:sellerId', reviewCtrl.getSellerReviews);
+router.get('/seller/:username', reviewCtrl.getSellerReviews);
 
 export default router;
