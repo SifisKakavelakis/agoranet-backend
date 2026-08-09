@@ -5,6 +5,7 @@ import Product from './product.model';
 import Category from './category.model';
 import ProductImage from './product-image.model';
 import Order from './order.model';
+import Review from './review.model';
 
 User.belongsToMany(Role, {
     through:    UserRole,
@@ -35,4 +36,13 @@ Order.belongsTo(User, { foreignKey: 'buyer_id', as: 'buyer' });
 Product.hasMany(Order, { foreignKey: 'product_id', as: 'orders' });
 Order.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
 
-export { User, Role, UserRole, Product, ProductImage, Category, Order };
+User.hasMany(Review, { foreignKey: 'reviewer_id', as: 'givenReviews' });
+Review.belongsTo(User, { foreignKey: 'reviewer_id', as: 'reviewer' });
+
+User.hasMany(Review, { foreignKey: 'seller_id', as: 'receivedReviews' });
+Review.belongsTo(User, { foreignKey: 'seller_id', as: 'seller' });
+
+Order.hasOne(Review, { foreignKey: 'order_id', as: 'review' });
+Review.belongsTo(Order, { foreignKey: 'order_id', as: 'order' });
+
+export { User, Role, UserRole, Product, ProductImage, Category, Order, Review };
