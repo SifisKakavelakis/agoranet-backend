@@ -9,6 +9,7 @@ import path from 'path';
 import orderRoutes from './routes/order.routes';
 import { errorHandler } from './middlewares/error.middleware';
 import reviewRoutes from './routes/review.routes';
+import wishlistRoutes from './routes/wishlist.routes';
 import cors from 'cors';
 
 dotenv.config();
@@ -27,6 +28,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);  
+app.use('/api/wishlist', wishlistRoutes);
 app.use(errorHandler);
 
 export default app;
