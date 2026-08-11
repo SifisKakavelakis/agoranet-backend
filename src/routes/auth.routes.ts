@@ -2,6 +2,7 @@ import { Router } from 'express';
 import * as authCtrl from '../controller/auth.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { loginSchema, registerSchema } from '../validators/user.validator';
+import { authenticate } from '../middlewares/auth.middleware';
 
 const router = Router();
 
@@ -69,5 +70,21 @@ router.post('/login', validate(loginSchema), authCtrl.login);
  *         description: User already exists
  */
 router.post('/register', validate(registerSchema), authCtrl.register);
+
+/**
+ * @openapi
+ * /auth/me:
+ *   get:
+ *     summary: Get current logged in user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user data
+ *       401:
+ *         description: Unauthorized
+ */
+router.get('/me', authenticate, authCtrl.me);
 
 export default router;
