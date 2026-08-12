@@ -32,3 +32,14 @@ export const getByUsername = async (req: Request, res: Response, next: NextFunct
         next(err);
     }
 };
+
+export const becomeSeller = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.user!.id;
+        const result = await userService.becomeSeller(userId);
+        if (!result) return res.status(400).json({ message: 'Could not become seller' });
+        res.status(200).json({ status: true, data: toUserResponseDTO(result) });
+    } catch (err) {
+        next(err);
+    }
+};  

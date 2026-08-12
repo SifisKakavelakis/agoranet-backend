@@ -67,4 +67,22 @@ router.put('/:username', authenticate, validate(updateUserSchema), userCtrl.upda
  */
 router.get('/:username', userCtrl.getByUsername);
 
+/**
+ * @openapi
+ * /users/become-seller:
+ *   post:
+ *     summary: Upgrade current user to seller
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User upgraded to seller successfully
+ *       400:
+ *         description: Could not become seller
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/become-seller', authenticate, userCtrl.becomeSeller);
+
 export default router;

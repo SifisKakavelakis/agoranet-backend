@@ -46,3 +46,18 @@ export const updateUser = async (username: string, payload: UpdateUserDTO) => {
 export const getUserByUsername = async (username: string) => {
     return await userDAO.findByUsername(username);
 };
+
+export const becomeSeller = async (userId: number) => {
+    const user = await userDAO.findById(userId);
+    if (!user) return null;
+
+    const sellerRole = await Role.findOne({ where: { id: ROLES.SELLER } });
+    if (!sellerRole) return null;
+
+    await (user as any).addRole(sellerRole);
+
+    return await User.findOne({
+        where: { id: userId },
+        include: [{ model: Role, as: 'roles' }],
+    });
+};

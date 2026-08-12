@@ -20,6 +20,13 @@ export const findByUsername = async (username: string): Promise<User | null> => 
     });
 };
 
+export const findById = async (id: number): Promise<User | null> => {
+    return await User.findOne({
+        where: { id },
+        include: [{ model: Role, as: 'roles' }],
+    });
+};
+
 // export const findAll = async (): Promise<User[]> => {
 //     return await User.findAll({
 //         include: [{ model: Role, as: 'roles' }],
@@ -29,13 +36,6 @@ export const findByUsername = async (username: string): Promise<User | null> => 
 // export const findByEmail = async (email: string): Promise<User | null> => {
 //     return await User.findOne({
 //         where: { email },
-//         include: [{ model: Role, as: 'roles' }],
-//     });
-// };
-
-// export const findById = async (id: number): Promise<User | null> => {
-//     return await User.findOne({
-//         where: { id },
 //         include: [{ model: Role, as: 'roles' }],
 //     });
 // };
