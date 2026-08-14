@@ -28,20 +28,32 @@ export const createUser = async (payload: CreateUserDTO) => {
 };
 
 export const updateUser = async (username: string, payload: UpdateUserDTO) => {
-    const updateUser: Partial<IUser> = {};
-    if (payload.firstname!=undefined) updateUser.firstname = payload.firstname;
-    if (payload.lastname!=undefined) updateUser.lastname = payload.lastname;
-    if (payload.email!=undefined) updateUser.email = payload.email;
-    if (payload.phoneNumber!=undefined) updateUser.phoneNumber = payload.phoneNumber;
-    if (payload.avatarUrl!=undefined) updateUser.avatarUrl = payload.avatarUrl;
+    const existingUser = await userDAO.findByUsername(username);
+    if (!existingUser) return null;
 
-    if (payload.password!=undefined) {
-        updateUser.password = await bcrypt.hash(payload.password, BCRYPT_SALT_ROUNDS);
+    if (payload.password) {
+        if (!payload.currentPassword) {
+            throw new Error('Current password is required to change password');
+        }
+        const isValid = await bcrypt.compare(payload.currentPassword, existingUser.password);
+        if (!isValid) {
+            throw new Error('Current password is incorrect');
+        }
     }
 
-    const user = await userDAO.updateUser(username, updateUser);
-    return user;
-}
+    const updateData: Partial<IUser> = {};
+    if (payload.firstname     != undefined) updateData.firstname    = payload.firstname;
+    if (payload.lastname      != undefined) updateData.lastname     = payload.lastname;
+    if (payload.email         != undefined) updateData.email        = payload.email;
+    if (payload.phoneNumber   != undefined) updateData.phoneNumber  = payload.phoneNumber;
+    if (payload.avatarUrl     != undefined) updateData.avatarUrl    = payload.avatarUrl;
+
+    if (payload.password != undefined) {
+        updateData.password = await bcrypt.hash(payload.password, BCRYPT_SALT_ROUNDS);
+    }
+
+    return await userDAO.updateUser(username, updateData);
+};
 
 export const getUserByUsername = async (username: string) => {
     return await userDAO.findByUsername(username);
