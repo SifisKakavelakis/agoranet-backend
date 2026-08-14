@@ -9,6 +9,7 @@ export interface CreateUserDTO {
 }
 
 export interface UpdateUserDTO {
+  currentPassword?: string;
   password?:    string;
   email?:       string;
   firstname?:   string;
