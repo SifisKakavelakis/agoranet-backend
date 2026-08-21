@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { isBlacklisted } from '../services/blacklist.service';
 
 const JWT_SECRET_ENV = process.env.JWT_SECRET;
 if (!JWT_SECRET_ENV) {
@@ -7,7 +8,7 @@ if (!JWT_SECRET_ENV) {
 }
 const JWT_SECRET: string = JWT_SECRET_ENV;
 
-export const authenticate = (req: Request, res: Response, next: NextFunction) => {
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
     const header = req.headers.authorization;
     if (!header || !header.startsWith('Bearer ')) {
         return res.status(401).json({ message: 'Missing or invalid Authorization header' });
@@ -19,17 +20,22 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
     }
 
     try {
+        const blacklisted = await isBlacklisted(token);
+        if (blacklisted) {
+            return res.status(401).json({ message: 'Token has been invalidated' });
+        }
+
         const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
         req.user = {
-            id: payload.id,
+            id:       payload.id,
             username: payload.username,
-            roles: payload.roles,
+            roles:    payload.roles,
         };
-        next()
+        next();
     } catch (err) {
         res.status(401).json({ message: 'Invalid or expired token' });
     }
-}
+};
 
 export const authorize = (...roles: string[]) => {
     return (req: Request, res: Response, next: NextFunction): void => {
