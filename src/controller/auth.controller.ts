@@ -4,6 +4,7 @@ import * as userService from '../services/user.service';
 import { CreateUserDTO } from '../dto/user.dto';
 import { toUserResponseDTO } from '../mappers/user.mapper';
 import * as blacklistService from '../services/blacklist.service';
+import jwt from 'jsonwebtoken';
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -39,9 +40,14 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
 
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
-        if (!token) return res.status(401).json({ message: 'No token provided' });
-        await blacklistService.addToBlacklist(token);
+        const authHeader = req.headers.authorization;
+        if (!authHeader) return res.status(401).json({ message: 'No token provided' });
+
+        const token = authHeader.split(' ')[1] as string;
+        const payload = jwt.decode(token) as jwt.JwtPayload;
+        const expiresAt = payload?.exp ? new Date(payload.exp * 1000) : new Date();
+
+        await blacklistService.addToBlacklist(token, expiresAt);
         res.status(200).json({ status: true, message: 'Logged out successfully' });
     } catch (err) {
         next(err);
