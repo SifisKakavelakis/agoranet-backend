@@ -14,7 +14,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
     } catch (err) {
         next(err);
     }
-};  
+};
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -52,15 +52,20 @@ export const remove = async (req: Request, res: Response, next: NextFunction) =>
 
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const filters: { category?: number; search?: string } = {};
-        if (req.query.category) {
-            filters.category = parseInt(req.query.category as string);
-        }
-        if (req.query.search) {
-            filters.search = req.query.search as string;
-        }
-        const products = await productService.getAllProducts(filters);
-        res.status(200).json({ status: true, data: products.map(toProductResponseDTO) });
+        const { category, search, page, limit } = req.query;
+        const result = await productService.getAllProducts({
+            ...(category && { category: parseInt(category as string) }),
+            ...(search && { search: search as string }),
+            ...(page && { page: parseInt(page as string) }),
+            ...(limit && { limit: parseInt(limit as string) }),
+        });
+        res.status(200).json({
+            status: true,
+            data: result.data.map(toProductResponseDTO),
+            total: result.total,
+            page: result.page,  
+            totalPages: result.totalPages,
+        });
     } catch (err) {
         next(err);
     }

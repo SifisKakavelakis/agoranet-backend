@@ -23,6 +23,8 @@ export const deleteProduct = async (id: number): Promise<void> => {
 export const findAll = async (filters: {
     category?: number;
     search?:   string;
+    page?:     number;
+    limit?:    number;
 } = {}) => {
     const where: any = { isActive: true };
 
@@ -34,14 +36,28 @@ export const findAll = async (filters: {
         where.title = { [Op.like]: `%${filters.search}%` };
     }
 
-    return await Product.findAll({
+    const page  = filters.page  || 1;
+    const limit = filters.limit || 20;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Product.findAndCountAll({
         where,
         include: [
             { model: Category,     as: 'category' },
             { model: User,         as: 'seller', attributes: ['id', 'username'] },
             { model: ProductImage, as: 'images' },
         ],
+        limit,
+        offset,
+        distinct: true,
     });
+
+    return {
+        data:       rows,
+        total:      count,
+        page,
+        totalPages: Math.ceil(count / limit),
+    };
 };
 
 export const findById = async (id: number): Promise<Product | null> => {

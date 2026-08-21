@@ -5,6 +5,8 @@ import * as productDAO from '../dao/product.dao';
 export const getAllProducts = async (filters: {
     category?: number;
     search?:   string;
+    page?:     number;
+    limit?:    number;
 } = {}) => {
     return await productDAO.findAll(filters);
 };
@@ -35,14 +37,13 @@ export const deleteProduct = async (id: number): Promise<void> => {
 };
 
 export const addImages = async (productId: number, files: Express.Multer.File[]) => {
-    // ελέγχουμε αν υπάρχει ήδη primary εικόνα
     const existingImages = await productDAO.findImages(productId);
     const hasPrimary = existingImages.length > 0;
 
     const images = files.map((file, index) => ({
         productId,
         url: `/api/uploads/${file.filename}`,
-        isPrimary: !hasPrimary && index === 0, // primary μόνο αν δεν υπάρχει ήδη
+        isPrimary: !hasPrimary && index === 0,
     }));
 
     return await productDAO.addImages(images);
