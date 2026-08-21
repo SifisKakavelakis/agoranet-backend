@@ -3,6 +3,7 @@ import * as authService from '../services/auth.service';
 import * as userService from '../services/user.service';
 import { CreateUserDTO } from '../dto/user.dto';
 import { toUserResponseDTO } from '../mappers/user.mapper';
+import * as blacklistService from '../services/blacklist.service';
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -31,6 +32,17 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
         const user = await userService.getUserByUsername(req.user!.username);
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.status(200).json({ status: true, data: toUserResponseDTO(user) });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const logout = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) return res.status(401).json({ message: 'No token provided' });
+        await blacklistService.addToBlacklist(token);
+        res.status(200).json({ status: true, message: 'Logged out successfully' });
     } catch (err) {
         next(err);
     }

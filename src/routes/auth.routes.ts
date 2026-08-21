@@ -87,4 +87,20 @@ router.post('/register', validate(registerSchema), authCtrl.register);
  */
 router.get('/me', authenticate, authCtrl.me);
 
+/**
+ * @openapi
+ * /auth/logout:
+ *   post:
+ *     summary: Logout and invalidate token
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/logout', authenticate, authCtrl.logout);
+
 export default router;
