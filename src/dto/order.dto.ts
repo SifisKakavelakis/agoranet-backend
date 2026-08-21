@@ -20,6 +20,10 @@ export interface OrderResponseDTO {
     id:       number;
     username: string;
   } | null;
+  seller: {
+    id:       number;
+    username: string;
+  } | null;
   createdAt: Date;
   updatedAt: Date;
 }
