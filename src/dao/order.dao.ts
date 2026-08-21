@@ -7,7 +7,10 @@ const orderIncludes = [
     {
         model: Product,
         as: 'product',
-        include: [{ model: ProductImage, as: 'images' }],
+        include: [
+            { model: ProductImage, as: 'images' },
+            { model: User, as: 'seller', attributes: ['id', 'username'] },
+        ],
     },
     {
         model: User,
