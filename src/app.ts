@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 import userRoutes from './routes/user.routes';
 import authRoutes from './routes/auth.routes';
 import './models/index'; 
@@ -22,6 +23,7 @@ const limiter = rateLimit({
 });
 
 const app = express();
+app.use(helmet());
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true,
