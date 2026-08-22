@@ -63,7 +63,7 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
             status: true,
             data: result.data.map(toProductResponseDTO),
             total: result.total,
-            page: result.page,  
+            page: result.page,
             totalPages: result.totalPages,
         });
     } catch (err) {
@@ -114,6 +114,25 @@ export const uploadImages = async (req: Request, res: Response, next: NextFuncti
 
         const images = await productService.addImages(id, files);
         res.status(201).json({ status: true, data: images });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = parseInt(req.params.id as string);
+        const imageId = parseInt(req.params.imageId as string);
+        const sellerId = req.user!.id;
+
+        const existing = await productService.getProductById(id);
+        if (!existing) return res.status(404).json({ message: 'Product not found' });
+        if ((existing as any).sellerId !== sellerId) {
+            return res.status(403).json({ message: 'Access denied — not your product' });
+        }
+
+        await productService.deleteImage(imageId);
+        res.status(200).json({ status: true, message: 'Image deleted successfully' });
     } catch (err) {
         next(err);
     }
