@@ -48,3 +48,7 @@ export const addImages = async (productId: number, files: Express.Multer.File[])
 
     return await productDAO.addImages(images);
 };
+
+export const deleteImage = async (imageId: number): Promise<void> => {
+    await productDAO.deleteImage(imageId);
+};
