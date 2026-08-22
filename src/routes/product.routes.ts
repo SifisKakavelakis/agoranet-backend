@@ -198,4 +198,33 @@ router.delete('/:id', authenticate, authorize('seller'), productCtrl.remove);
  */
 router.post('/:id/images', authenticate, authorize('seller'), upload.array('images', 5), productCtrl.uploadImages);
 
+/**
+ * @openapi
+ * /products/{id}/images/{imageId}:
+ *   delete:
+ *     summary: Delete a product image
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: imageId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Image deleted successfully
+ *       403:
+ *         description: Access denied
+ *       404:
+ *         description: Image not found
+ */
+router.delete('/:id/images/:imageId', authenticate, authorize('seller'), productCtrl.deleteImage);
+
 export default router;
