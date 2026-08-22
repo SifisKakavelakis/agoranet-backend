@@ -3,6 +3,8 @@ import { ProductImage, IProductImage } from '../models/product-image.model';
 import { Category } from '../models/category.model';
 import { User } from '../models/user.model';
 import { Op } from 'sequelize';
+import fs from 'fs';
+import path from 'path';
 
 export const createProduct = async (data: Partial<IProduct>): Promise<Product> => {
     return await Product.create(data as IProduct);
@@ -88,4 +90,16 @@ export const findImages = async (productId: number): Promise<ProductImage[]> => 
 
 export const addImages = async (images: Partial<IProductImage>[]): Promise<ProductImage[]> => {
     return await ProductImage.bulkCreate(images as IProductImage[]);
+};
+
+export const deleteImage = async (imageId: number): Promise<void> => {
+    const image = await ProductImage.findOne({ where: { id: imageId } });
+    if (image) {
+        // διαγραφή αρχείου από disk
+        const filePath = path.join(__dirname, '../../', image.url);
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+        await image.destroy();
+    }
 };
