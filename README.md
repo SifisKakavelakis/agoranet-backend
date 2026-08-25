@@ -64,7 +64,7 @@ A RESTful API for a second-hand marketplace built with Node.js, Express, TypeScr
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-username/agoranet-backend.git
+git clone https://github.com/SifisKakavelakis/agoranet-backend.git
 cd agoranet-backend
 ```
 
