@@ -74,9 +74,9 @@ cd agoranet-backend
 npm install
 ```
 
-3. **Create the database**
-```sql
-CREATE DATABASE agoranet;
+3. **Set up the database**
+```bash
+mysql -u root -p < database.sql
 ```
 
 4. **Set up environment variables**
