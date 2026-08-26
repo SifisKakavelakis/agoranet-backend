@@ -20,6 +20,7 @@ A RESTful API for a second-hand marketplace built with Node.js, Express, TypeScr
 - [Security](#security)
 - [Database Schema](#database-schema)
 - [Environment Variables](#environment-variables)
+- [Build & Deploy](#build--deploy)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -390,69 +391,70 @@ Check if a product is in the authenticated user's wishlist. Requires Bearer toke
 
 ## Project Structure
 
+```
 src/
-├── controller/ # Route handlers
-│ ├── auth.controller.ts
-│ ├── user.controller.ts
-│ ├── product.controller.ts
-│ ├── order.controller.ts
-│ ├── review.controller.ts
-│ └── wishlist.controller.ts
-├── dao/ # Database access layer
-│ ├── user.dao.ts
-│ ├── product.dao.ts
-│ ├── order.dao.ts
-│ ├── review.dao.ts
-│ └── wishlist.dao.ts
-├── dto/ # Data transfer objects
-│ ├── user.dto.ts
-│ ├── product.dto.ts
-│ ├── order.dto.ts
-│ ├── review.dto.ts
-│ └── role.dto.ts
-├── mappers/ # Response mappers
-│ ├── user.mapper.ts
-│ ├── product.mapper.ts
-│ └── order.mapper.ts
-├── middlewares/ # Express middlewares
-│ ├── auth.middleware.ts
-│ ├── validate.middleware.ts
-│ ├── upload.middleware.ts
-│ └── error.middleware.ts
-├── models/ # Sequelize models
-│ ├── user.model.ts
-│ ├── product.model.ts
-│ ├── product-image.model.ts
-│ ├── order.model.ts
-│ ├── review.model.ts
-│ ├── wishlist.model.ts
-│ ├── role.model.ts
-│ ├── blacklisted-token.model.ts
-│ └── index.ts
-├── routes/ # Express routes with Swagger docs
-│ ├── auth.routes.ts
-│ ├── user.routes.ts
-│ ├── product.routes.ts
-│ ├── order.routes.ts
-│ ├── review.routes.ts
-│ └── wishlist.routes.ts
-├── services/ # Business logic
-│ ├── auth.service.ts
-│ ├── user.service.ts
-│ ├── product.service.ts
-│ ├── order.service.ts
-│ ├── review.service.ts
-│ ├── wishlist.service.ts
-│ └── blacklist.service.ts
-├── utils/ # Utilities
-│ └── db.ts
-├── validators/ # Zod schemas
-│ ├── user.validator.ts
-│ └── product.validator.ts
-├── app.ts # Express app setup
-├── server.ts # Server entry point
-└── swagger.ts # Swagger configuration
-
+├── controller/        # Route handlers
+│   ├── auth.controller.ts
+│   ├── user.controller.ts
+│   ├── product.controller.ts
+│   ├── order.controller.ts
+│   ├── review.controller.ts
+│   └── wishlist.controller.ts
+├── dao/               # Database access layer
+│   ├── user.dao.ts
+│   ├── product.dao.ts
+│   ├── order.dao.ts
+│   ├── review.dao.ts
+│   └── wishlist.dao.ts
+├── dto/               # Data transfer objects
+│   ├── user.dto.ts
+│   ├── product.dto.ts
+│   ├── order.dto.ts
+│   ├── review.dto.ts
+│   └── role.dto.ts
+├── mappers/           # Response mappers
+│   ├── user.mapper.ts
+│   ├── product.mapper.ts
+│   └── order.mapper.ts
+├── middlewares/       # Express middlewares
+│   ├── auth.middleware.ts
+│   ├── validate.middleware.ts
+│   ├── upload.middleware.ts
+│   └── error.middleware.ts
+├── models/            # Sequelize models
+│   ├── user.model.ts
+│   ├── product.model.ts
+│   ├── product-image.model.ts
+│   ├── order.model.ts
+│   ├── review.model.ts
+│   ├── wishlist.model.ts
+│   ├── role.model.ts
+│   ├── blacklisted-token.model.ts
+│   └── index.ts
+├── routes/            # Express routes with Swagger docs
+│   ├── auth.routes.ts
+│   ├── user.routes.ts
+│   ├── product.routes.ts
+│   ├── order.routes.ts
+│   ├── review.routes.ts
+│   └── wishlist.routes.ts
+├── services/          # Business logic
+│   ├── auth.service.ts
+│   ├── user.service.ts
+│   ├── product.service.ts
+│   ├── order.service.ts
+│   ├── review.service.ts
+│   ├── wishlist.service.ts
+│   └── blacklist.service.ts
+├── utils/             # Utilities
+│   └── db.ts
+├── validators/        # Zod schemas
+│   ├── user.validator.ts
+│   └── product.validator.ts
+├── app.ts             # Express app setup
+├── server.ts          # Server entry point
+└── swagger.ts         # Swagger configuration
+```
 
 ## Security
 
@@ -494,6 +496,64 @@ src/
 | `BCRYPT_SALT_ROUNDS` | bcrypt salt rounds | Yes |
 | `JWT_SECRET` | JWT signing secret | Yes |
 | `JWT_EXPIRES` | JWT expiry time (e.g. 1h) | Yes |
+
+## Build & Deploy
+
+### Build
+
+```bash
+npm run build
+```
+
+The compiled JavaScript files will be output to the `dist/` directory.
+
+### Run in Production
+
+```bash
+npm start
+```
+
+### Deploy with Docker
+
+1. **Create a Dockerfile**
+```dockerfile
+FROM node:24-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --production
+COPY . .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+2. **Build the Docker image**
+```bash
+docker build -t agoranet-backend .
+```
+
+3. **Run the Docker container**
+```bash
+docker run -p 3000:3000 \
+  -e PORT=3000 \
+  -e DB_HOST=your_db_host \
+  -e DB_PORT=3306 \
+  -e DB_NAME=agoranet \
+  -e DB_USER=your_db_user \
+  -e DB_PASSWORD=your_db_password \
+  -e BCRYPT_SALT_ROUNDS=10 \
+  -e JWT_SECRET=your_jwt_secret \
+  -e JWT_EXPIRES=1h \
+  agoranet-backend
+```
+
+### Deploy to Railway
+
+1. Create a new project on [Railway](https://railway.app)
+2. Connect your GitHub repository
+3. Add a MySQL database service
+4. Set the environment variables from the `.env` file
+5. Railway will automatically build and deploy the app
 
 ## Contributing
 
